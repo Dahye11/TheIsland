@@ -863,7 +863,7 @@ void CIngameScene::CreatePlayerStatusUI()
 	pChildObject->AddComponent(new CMeshRender);
 
 	// Transform 설정
-	pChildObject->Transform()->SetLocalPos(Vec3(0.f, 0.f, 2000.f));
+	pChildObject->Transform()->SetLocalPos(Vec3(0.f, 0.f, 1200.f));
 	pChildObject->Transform()->SetLocalScale(Vec3(vResolution.fWidth, vResolution.fHeight, 1.f));
 
 	// MeshRender 설정
@@ -1871,27 +1871,26 @@ void CIngameScene::AnimalAnimationUpdate( USHORT uiId, UINT uiType )
 	}
 	else if ( uiType == ( UINT )ANIMAL_ANIMATION_TYPE::DIE ) {
 		m_mapAnimals[uiId]->Animator3D()->ChangeAnimation( L"Die" );
-		m_mapAnimals[uiId]->GetScript<CAnimalScript>()->SetAnimalDead(true);
 	}
 	else if ( uiType == ( UINT )ANIMAL_ANIMATION_TYPE::ATTACK ) {
 		m_mapAnimals[uiId]->Animator3D()->ChangeAnimation( L"Attack" );
 	}
 }
 
-void CIngameScene::InstallHousing( UINT uiType, UINT uiGrade, USHORT uiId, Vec3 vPos, Vec3 vRot, Vec3 vScale )
+void CIngameScene::InstallHousing( UINT uiType, USHORT uiId, Vec3 vPos, Vec3 vRot, Vec3 vScale )
 {
 	CGameObject* pObject = nullptr;
 
 	if ( ( HOUSING_TYPE )uiType != HOUSING_ETC )
 	{
-		pObject = CHousingMgr::GetInst()->GetHousingMeshData( ( HOUSING_TYPE )uiType, uiGrade )->Instantiate();
+		pObject = CHousingMgr::GetInst()->GetHousingMeshData( ( HOUSING_TYPE )uiType )->Instantiate();
 	}
 	else
 	{
 		Ptr<CMeshData> pTex = CResMgr::GetInst()->Load<CMeshData>( L"Campfire.mdat", L"MeshData\\campfire.mdat" );
 		pObject = pTex->Instantiate();
 	}
-	pObject->AddComponent( new CBuildScript( ( HOUSING_TYPE )uiType, uiGrade ) );
+	pObject->AddComponent( new CBuildScript( ( HOUSING_TYPE )uiType ) );
 
 #ifdef CHECK_COLLISION
 	pObject->AddComponent( new CCollider2D );

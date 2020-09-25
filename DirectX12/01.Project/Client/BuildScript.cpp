@@ -429,7 +429,7 @@ void CBuildScript::MustBuild()
 
 	if (m_eType == HOUSING_FOUNDATION)
 	{
-		CGameObject* pFloor = CHousingMgr::GetInst()->GetHousingMeshData(HOUSING_FLOOR, m_iGrade)->Instantiate();
+		CGameObject* pFloor = CHousingMgr::GetInst()->GetHousingMeshData(HOUSING_FLOOR)->Instantiate();
 		pFloor->SetName(L"Foundation_Floor");
 		pFloor->FrustumCheck(false);
 		pFloor->Transform()->SetLocalPos(Vec3(0.f, 0.f, -14.f));

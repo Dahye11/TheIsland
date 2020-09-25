@@ -331,7 +331,7 @@ void CNetwork::Recv_Install_Housing_Packet(char * packet)
 	Vec3 vScale = install_housing_packet->vLocalScale;
 
 	// INSTALL Àü¼Û
-	dynamic_cast<CIngameScene*>(pScene->GetSceneScript())->InstallHousing(type, grade, house_id, vPos, vRot, vScale);
+	dynamic_cast<CIngameScene*>(pScene->GetSceneScript())->InstallHousing(type, house_id, vPos, vRot, vScale);
 }
 
 void CNetwork::Recv_Remove_Housing_Packet(char * packet)

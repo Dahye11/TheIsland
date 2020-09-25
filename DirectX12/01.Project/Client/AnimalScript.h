@@ -74,7 +74,6 @@ public:
 
 	void Damage(CGameObject* _pOther, float fDamage);
 	bool GetAnimalDead();
-	void SetAnimalDead(bool bDead);
 
 	void SetAnimalSpawner(CAnimalSpawner* pSpawner);
 

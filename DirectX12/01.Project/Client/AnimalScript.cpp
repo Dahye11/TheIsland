@@ -617,11 +617,6 @@ bool CAnimalScript::GetAnimalDead()
 	return m_bAnimalDead;
 }
 
-void CAnimalScript::SetAnimalDead(bool bDead)
-{
-	m_bAnimalDead = bDead;
-}
-
 void CAnimalScript::SetAnimalSpawner(CAnimalSpawner* pSpawner)
 {
 	m_pSpawner = pSpawner;
