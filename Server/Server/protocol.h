@@ -8,10 +8,10 @@ constexpr	int	MAX_USER = 100;
 constexpr	int	NO_TARGET = 9999;
 
 constexpr	int	BEGIN_ANIMAL = MAX_USER;
-constexpr	int	ANIMAL_BEAR = 10;
-constexpr	int	ANIMAL_BOAR = 5;
-constexpr	int	ANIMAL_DEER = 10;
-constexpr	int	ANIMAL_WOLF = 5;
+constexpr	int	ANIMAL_BEAR = 0;
+constexpr	int	ANIMAL_BOAR = 1;
+constexpr	int	ANIMAL_DEER = 0;
+constexpr	int	ANIMAL_WOLF = 0;
 constexpr	int	MAX_ANIMAL = ANIMAL_BEAR + ANIMAL_BOAR + ANIMAL_DEER + ANIMAL_WOLF;
 constexpr	int	END_ANIMAL = BEGIN_ANIMAL + MAX_ANIMAL;
 

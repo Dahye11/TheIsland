@@ -46,106 +46,102 @@ void CMonsterProcess::AttackEvent(USHORT Animal_Id, USHORT usTarget)
 	}
 	// ==============================================================
 	// Animation
-	if (CollisionSphere(Animal, Target, 0.3f)) {
-		Animal->SetAnimation((UINT)ANIMAL_ANIMATION_TYPE::ATTACK);
+	Animal->SetAnimation((UINT)ANIMAL_ANIMATION_TYPE::ATTACK);
+	
 
-		Vec3 vAnimalPos = Animal->GetLocalPos();
-		Animal->SetPrevPos(vAnimalPos);
+	Vec3 vAnimalPos = Animal->GetLocalPos();
+	Animal->SetPrevPos(vAnimalPos);
 
-		Vec3 vTargetPos = Target->GetLocalPos();
-		float fAnimalSpeed = Animal->GetSpeed();
-		Vec3 vTargetRot = Target->GetLocalRot();
+	Vec3 vTargetPos = Target->GetLocalPos();
+	float fAnimalSpeed = Animal->GetSpeed();
+	Vec3 vTargetRot = Target->GetLocalRot();
 
-		Vec3 vDir = XMVector3Normalize(vTargetPos - vAnimalPos);
-		vDir.y = 0.f;
-		vAnimalPos += vDir * fAnimalSpeed * 0.05f;
-
-
-		Animal->SetLocalRot(Vec3(-3.141592654f / 2.f, atan2(vDir.x, vDir.z) + 3.141592f, 0.f));
-
-		for (auto& user : rangeList) {
-			bool bConnect = m_pObjectPool->m_cumPlayerPool[user]->GetConnect();
-			if (!bConnect) continue;
-			bool bExist = m_pObjectPool->m_cumPlayerPool[user]->ExistList(Animal_Index);
-			if (bExist) {
-				CPacketMgr::Send_Pos_Packet(user, Animal_Index);
-				CPacketMgr::Send_Animation_Packet(user, Animal_Index, (UINT)ANIMAL_ANIMATION_TYPE::ATTACK);
-			}
-		}
-
-		// Attack
-		float fTarget_CurrHp = Target->GetHealth();
-		float fAnimalDamage = Animal->GetDamage();
-		fTarget_CurrHp -= fAnimalDamage;
-		float fTarget_AfterHp = fTarget_CurrHp;
+	Vec3 vDir = XMVector3Normalize(vTargetPos - vAnimalPos);
+	vDir.y = 0.f;
+	vAnimalPos += vDir * fAnimalSpeed * 0.05f;
 
 
-		if (fTarget_AfterHp <= 0.f)
-		{
-			// - Player
-			fTarget_AfterHp = 0.f;
-			Target->SetHealth(fTarget_AfterHp);
-			Target->SetState(OST_DIE);
-			CPacketMgr::Send_Status_Player_Packet(Target_Index);
-			CPacketMgr::Send_Death_Player_Packet(Target_Index);
-		}
-		else
-		{
-			// - Player
-			Target->SetHealth(fTarget_AfterHp);
-			CPacketMgr::Send_Status_Player_Packet(Target_Index);
-		}
-		// ========================================================
-		// New Target
-		USHORT NewTarget = NO_TARGET;
-		float fDist = ANIMAL_VIEW_RANGE;
+	Animal->SetLocalRot(Vec3(-3.141592654f / 2.f, atan2(vDir.x, vDir.z) + 3.141592f, 0.f));
 
-		InRangePlayer(loginList, rangeList, Animal_Index);
-		for (auto user : rangeList) {
-			if (!m_pObjectPool->m_cumPlayerPool[user]->GetConnect()) continue;
-			if (m_pObjectPool->m_cumPlayerPool[user]->GetState() == OST_DIE) continue;
-
-			Vec3 vPos1 = Animal->GetLocalPos();
-			Vec3 vPos2 = m_pObjectPool->m_cumPlayerPool[user]->GetLocalPos();
-			if (ObjectRangeCheck(vPos1, vPos2, 2000.f)) {
-				float currDist = CalculationDistance(vPos1, vPos2);
-				if (fDist >= currDist) {
-					fDist = currDist;
-					NewTarget = user;
-				}
-			}
-		}
-		// ==========================================================
-		if (NewTarget == NO_TARGET) {
-			bool bExit = Animal->GetExit();
-			if (bExit) {
-				int iCount = Animal->GetExitCount();
-				if (iCount == 0) {
-					Animal->SetExit(false);
-					Animal->SetWakeUp(false);
-					Animal->SetTarget(NO_TARGET);
-					return;
-				}
-				else {
-					Animal->MinusExitCount();
-				}
-			}
-			else {
-				Animal->SetExit(true);
-				Animal->SetExitCount(60);
-			}
-
-			//Animal->SetTarget(NO_TARGET);
-			PushEvent_Animal_Behavior(Animal_Index);
-		}
-		else {
-			Animal->SetExit(false);
-			Animal->SetExitCount(0);
-			Animal->SetTarget(NewTarget);
-			PushEvent_Animal_Behavior(Animal_Index);
+	for (auto& user : rangeList) {
+		bool bConnect = m_pObjectPool->m_cumPlayerPool[user]->GetConnect();
+		if (!bConnect) continue;
+		bool bExist = m_pObjectPool->m_cumPlayerPool[user]->ExistList(Animal_Index);
+		if (bExist) {
+			CPacketMgr::Send_Pos_Packet(user, Animal_Index);
+			CPacketMgr::Send_Animation_Packet(user, Animal_Index, (UINT)ANIMAL_ANIMATION_TYPE::ATTACK);
 		}
 	}
+
+	// Attack
+	float fTarget_CurrHp = Target->GetHealth();
+	float fAnimalDamage = Animal->GetDamage();
+	fTarget_CurrHp -= fAnimalDamage;
+	float fTarget_AfterHp = fTarget_CurrHp;
+
+
+	if (fTarget_AfterHp <= 0.f)
+	{
+		// - Player
+		fTarget_AfterHp = 0.f;
+		Target->SetHealth(fTarget_AfterHp);
+		Target->SetState(OST_DIE);
+		CPacketMgr::Send_Status_Player_Packet(Target_Index);
+		CPacketMgr::Send_Death_Player_Packet(Target_Index);
+	}
+	else
+	{
+		// - Player
+		Target->SetHealth(fTarget_AfterHp);
+		CPacketMgr::Send_Status_Player_Packet(Target_Index);
+	}
+	// ========================================================
+	// New Target
+	USHORT NewTarget = NO_TARGET;
+	float fDist = ANIMAL_VIEW_RANGE;
+
+	InRangePlayer(loginList, rangeList, Animal_Index);
+	for (auto user : rangeList) {
+		if (!m_pObjectPool->m_cumPlayerPool[user]->GetConnect()) continue;
+		if (m_pObjectPool->m_cumPlayerPool[user]->GetState() == OST_DIE) continue;
+
+		Vec3 vPos1 = Animal->GetLocalPos();
+		Vec3 vPos2 = m_pObjectPool->m_cumPlayerPool[user]->GetLocalPos();
+		if (ObjectRangeCheck(vPos1, vPos2, 2000.f)) {
+			float currDist = CalculationDistance(vPos1, vPos2);
+			if (fDist >= currDist) {
+				fDist = currDist;
+				NewTarget = user;
+			}
+		}
+	}
+	// ==========================================================
+	if (NewTarget == NO_TARGET) {
+		bool bExit = Animal->GetExit();
+		if (bExit) {
+			int iCount = Animal->GetExitCount();
+			if (iCount == 0) {
+				Animal->SetExit(false);
+				Animal->SetWakeUp(false);
+				Animal->SetTarget(NO_TARGET);
+				return;
+			}
+			else {
+				Animal->MinusExitCount();
+			}
+		}
+		else {
+			Animal->SetExit(true);
+			Animal->SetExitCount(60);
+		}
+
+		//Animal->SetTarget(NO_TARGET);
+		PushEvent_Animal_Behavior(Animal_Index);
+	}
 	else {
+		Animal->SetExit(false);
+		Animal->SetExitCount(0);
+		Animal->SetTarget(NewTarget);
 		PushEvent_Animal_Behavior(Animal_Index);
 	}
 }
@@ -462,7 +458,7 @@ void CMonsterProcess::IdleEvent(USHORT AnimalId)
 		if (ObjectRangeCheck(vPos1, vPos2, PLAYER_VIEW_RANGE)) {
 			bool bIdle = Animal->GetIdle();
 			if (bIdle) {
-				CPacketMgr::Send_Animation_Packet(user, AnimalId, (UINT)ANIMAL_ANIMATION_TYPE::IDLE);
+
 			}
 			else {
 				CPacketMgr::Send_Pos_Packet(user, AnimalId);
@@ -543,9 +539,6 @@ void CMonsterProcess::RespawnEvent(USHORT Animal_Id)
 
 	m_pObjectPool->Init_Animal(Animal_Index);
 
-
-	Animal->SetState(OST_LIVE);
-
 	concurrent_unordered_set<USHORT> login_list;
 	concurrent_unordered_set<USHORT> range_list;
 
@@ -553,7 +546,6 @@ void CMonsterProcess::RespawnEvent(USHORT Animal_Id)
 	InRangePlayer(login_list, range_list, Animal_Index);
 
 	if (range_list.empty()) {
-		Animal->SetWakeUp(false);
 		return;
 	}
 
@@ -565,7 +557,6 @@ void CMonsterProcess::RespawnEvent(USHORT Animal_Id)
 		bool isConnect = CProcess::m_pObjectPool->m_cumPlayerPool[au]->GetConnect();
 		if (!isConnect) continue;
 		CPacketMgr::GetInst()->Send_Pos_Packet(au, Animal_Index);
-		CPacketMgr::Send_Animation_Packet(au, Animal_Index, (UINT)ANIMAL_ANIMATION_TYPE::IDLE);
 	}
 
 	PushEvent_Animal_Behavior(Animal_Index);

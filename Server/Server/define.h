@@ -20,5 +20,5 @@ typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;
 
 //#define DB_ON
-//#define ANIMAL_TEST
+#define ANIMAL_TEST
 
