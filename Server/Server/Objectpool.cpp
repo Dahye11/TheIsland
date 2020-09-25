@@ -494,7 +494,7 @@ void CObjectpool::Animal_Collision(USHORT usIndex)
 		if (NATURAL_TYPE::N_BUSH == eType)
 			continue;
 
-		if (CollisionSphere(Animal, natural, 0.2f)) {
+		if (CollisionSphere(Animal, natural)) {
 			Vec3 vNaturalPos = natural.second->GetLocalPos();
 			Vec3 vAnimalPos = Animal->GetLocalPos();
 			Vec3 vDir = XMVector3Normalize(vAnimalPos - vNaturalPos);
