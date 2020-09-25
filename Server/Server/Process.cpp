@@ -143,14 +143,7 @@ void CProcess::PushEvent_Animal_Attack(USHORT AnimalId, USHORT PlayerId)
 	ev.m_EventType = EV_MONSTER_UPDATE;
 	ev.m_From_Object = PlayerId;
 	ev.m_eObjUpdate = AUT_ATTACK;
-	bool bFirst = m_pObjectPool->m_cumAnimalPool[AnimalId]->GetFirstAttack();
-	if (bFirst) {
-		ev.wakeup_time = high_resolution_clock::now() + milliseconds(500);
-		m_pObjectPool->m_cumAnimalPool[AnimalId]->SetFirstAttack(false);
-	}
-	else {
-		ev.wakeup_time = high_resolution_clock::now() + 1s;
-	}
+	ev.wakeup_time = high_resolution_clock::now() + 1s;
 	PushEventQueue(ev);
 }
 
@@ -203,6 +196,7 @@ void CProcess::PushEvent_Animal_Die(USHORT AnimalId, USHORT PlayerId)
 
 void CProcess::PushEvent_Animal_Respawn(USHORT AnimalId)
 {
+	m_pObjectPool->m_cumAnimalPool[AnimalId]->SetState(OBJ_STATE_TYPE::OST_DIE);
 	m_pObjectPool->m_cumAnimalPool[AnimalId]->SetTarget(NO_TARGET);
 	BEHAVIOR_TYPE eType = m_pObjectPool->m_cumAnimalPool[AnimalId]->GetType();
 	Update_Event ev;

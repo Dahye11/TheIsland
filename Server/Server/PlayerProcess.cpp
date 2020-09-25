@@ -236,8 +236,7 @@ void CPlayerProcess::PlayerAttack(USHORT playerId, char * packet)
 
 		Animal->SetHit(true);
 
-		char eState = Animal->GetState();
-		if (eState == OST_DIE || eState == OST_REMOVE)
+		if (Animal->GetState() == OST_DIE)
 			return;
 
 		float fHealth = Animal->GetHealth();

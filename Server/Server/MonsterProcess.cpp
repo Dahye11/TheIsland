@@ -31,7 +31,7 @@ void CMonsterProcess::AttackEvent(USHORT Animal_Id, USHORT usTarget)
 	if (!bWakeUp) return;
 
 	char Animal_State = Animal->GetState();
-	if (Animal_State == OBJ_STATE_TYPE::OST_DIE || Animal_State == OST_REMOVE)	return;
+	if (Animal_State == OBJ_STATE_TYPE::OST_DIE)	return;
 
 	concurrent_unordered_set<USHORT> loginList;
 	concurrent_unordered_set<USHORT> rangeList;
@@ -41,7 +41,6 @@ void CMonsterProcess::AttackEvent(USHORT Animal_Id, USHORT usTarget)
 	if (rangeList.empty()) {
 		Animal->SetExit(false);
 		Animal->SetWakeUp(false);
-		Animal->SetFirstAttack(true);
 		Animal->SetTarget(NO_TARGET);
 		return;
 	}
@@ -61,18 +60,8 @@ void CMonsterProcess::AttackEvent(USHORT Animal_Id, USHORT usTarget)
 		vDir.y = 0.f;
 		vAnimalPos += vDir * fAnimalSpeed * 0.05f;
 
-		char eKind = Animal->GetKind();
-		if (ANIMAL_TYPE::A_BEAR == eKind || ANIMAL_TYPE::A_BOAR == eKind) {
-			Animal->SetLocalRot(Vec3(-3.141592654f / 2.f, atan2(vDir.x, vDir.z) + 3.141592f, 0.f));
-		}
-		else {
-			if (A_WOLF == eKind) {
-				Animal->SetLocalRot(Vec3(0.f, atan2(vDir.x, vDir.z), 0.f));
-			}
-			else {
-				Animal->SetLocalRot(Vec3(0.f, atan2(vDir.x, vDir.z) + 3.141592f, 0.f));
-			}
-		}
+
+		Animal->SetLocalRot(Vec3(-3.141592654f / 2.f, atan2(vDir.x, vDir.z) + 3.141592f, 0.f));
 
 		for (auto& user : rangeList) {
 			bool bConnect = m_pObjectPool->m_cumPlayerPool[user]->GetConnect();
@@ -98,7 +87,7 @@ void CMonsterProcess::AttackEvent(USHORT Animal_Id, USHORT usTarget)
 			Target->SetHealth(fTarget_AfterHp);
 			Target->SetState(OST_DIE);
 			CPacketMgr::Send_Status_Player_Packet(Target_Index);
-			//CPacketMgr::Send_Death_Player_Packet(Target_Index);
+			CPacketMgr::Send_Death_Player_Packet(Target_Index);
 		}
 		else
 		{
@@ -134,8 +123,6 @@ void CMonsterProcess::AttackEvent(USHORT Animal_Id, USHORT usTarget)
 				if (iCount == 0) {
 					Animal->SetExit(false);
 					Animal->SetWakeUp(false);
-					Animal->SetHit(false);
-					Animal->SetFirstAttack(true);
 					Animal->SetTarget(NO_TARGET);
 					return;
 				}
@@ -176,7 +163,7 @@ void CMonsterProcess::FollowEvent(USHORT AnimalId, USHORT usTarget)
 	if (!bWakeUp) return;
 
 	char Animal_State = Animal->GetState();
-	if (Animal_State == OBJ_STATE_TYPE::OST_DIE || Animal_State == OST_REMOVE)	return;
+	if (Animal_State == OBJ_STATE_TYPE::OST_DIE)	return;
 
 	concurrent_unordered_set<USHORT> loginList;
 	concurrent_unordered_set<USHORT> rangeList;
@@ -186,7 +173,6 @@ void CMonsterProcess::FollowEvent(USHORT AnimalId, USHORT usTarget)
 	if (rangeList.empty()) {
 		Animal->SetExit(false); 
 		Animal->SetWakeUp(false);
-		Animal->SetFirstAttack(true);
 		Animal->SetTarget(NO_TARGET);
 		return;
 	}
@@ -207,18 +193,8 @@ void CMonsterProcess::FollowEvent(USHORT AnimalId, USHORT usTarget)
 	vDir.y = 0.f;
 	vAnimalPos += vDir * fAnimalSpeed * 0.05f;
 
-	char eKind = Animal->GetKind();
-	if (ANIMAL_TYPE::A_BEAR == eKind || ANIMAL_TYPE::A_BOAR == eKind) {
-		Animal->SetLocalRot(Vec3(-3.141592654f / 2.f, atan2(vDir.x, vDir.z) + 3.141592f, 0.f));
-	}
-	else {
-		if (A_WOLF == eKind) {
-			Animal->SetLocalRot(Vec3(0.f, atan2(vDir.x, vDir.z), 0.f));
-		}
-		else {
-			Animal->SetLocalRot(Vec3(0.f, atan2(vDir.x, vDir.z) + 3.141592f, 0.f));
-		}
-	}
+
+	Animal->SetLocalRot(Vec3(-3.141592654f / 2.f, atan2(vDir.x, vDir.z) + 3.141592f, 0.f));
 	Animal->SetLocalPos(vAnimalPos);
 	// Collision
 	m_pObjectPool->Animal_Collision(Animal_Index);
@@ -254,8 +230,6 @@ void CMonsterProcess::FollowEvent(USHORT AnimalId, USHORT usTarget)
 			if (iCount == 0) {
 				Animal->SetExit(false);
 				Animal->SetWakeUp(false);
-				Animal->SetHit(false);
-				Animal->SetFirstAttack(true);
 				Animal->SetTarget(NO_TARGET);
 				return;
 			}
@@ -292,7 +266,7 @@ void CMonsterProcess::EvastionEvent(USHORT AnimalId, USHORT usTarget)
 	if (!bWakeUp) return;
 
 	char Animal_State = Animal->GetState();
-	if (Animal_State == OBJ_STATE_TYPE::OST_DIE || Animal_State == OST_REMOVE)	return;
+	if (Animal_State == OBJ_STATE_TYPE::OST_DIE)	return;
 
 	concurrent_unordered_set<USHORT> loginList;
 	concurrent_unordered_set<USHORT> rangeList;
@@ -302,8 +276,6 @@ void CMonsterProcess::EvastionEvent(USHORT AnimalId, USHORT usTarget)
 	if (rangeList.empty()) {
 		Animal->SetExit(false); 
 		Animal->SetWakeUp(false);
-		Animal->SetHit(false);
-		Animal->SetFirstAttack(true);
 		Animal->SetTarget(NO_TARGET);
 		return;
 	}
@@ -320,10 +292,7 @@ void CMonsterProcess::EvastionEvent(USHORT AnimalId, USHORT usTarget)
 	Vec3 vDir = XMVector3Normalize(vTargetPos - vAnimalPos);
 	vDir.y = 0.f;
 	vAnimalPos += - vDir * fAnimalSpeed * 0.05f;
-	bool bExit = Animal->GetExit();
-	if (!bExit) {
-		Animal->SetLocalRot(Vec3(0.f, atan2(-vDir.x, -vDir.z) + 3.141592f, 0.f));
-	}
+	Animal->SetLocalRot(Vec3(0.f, atan2( - vDir.x, - vDir.z) + 3.141592f, 0.f));
 	Animal->SetLocalPos(vAnimalPos);
 	// Collision
 	m_pObjectPool->Animal_Collision(Animal_Index);
@@ -359,8 +328,6 @@ void CMonsterProcess::EvastionEvent(USHORT AnimalId, USHORT usTarget)
 			if (iCount == 0) {
 				Animal->SetExit(false);
 				Animal->SetWakeUp(false);
-				Animal->SetHit(false);
-				Animal->SetFirstAttack(true);
 				Animal->SetTarget(NO_TARGET);
 				return;
 			}
@@ -395,7 +362,7 @@ void CMonsterProcess::IdleEvent(USHORT AnimalId)
 	if (!bWakeUp) return;
 
 	char Animal_State = Animal->GetState();
-	if (Animal_State == OBJ_STATE_TYPE::OST_DIE || Animal_State == OST_REMOVE)	return;
+	if (Animal_State == OBJ_STATE_TYPE::OST_DIE)	return;
 
 	concurrent_unordered_set<USHORT> loginList;
 	concurrent_unordered_set<USHORT> rangeList;
@@ -409,8 +376,6 @@ void CMonsterProcess::IdleEvent(USHORT AnimalId)
 		if (iCount == 0) {
 			Animal->SetExit(false);
 			Animal->SetWakeUp(false);
-			Animal->SetHit(false);
-			Animal->SetFirstAttack(true);
 			Animal->SetTarget(NO_TARGET);
 			return;
 		}
@@ -529,7 +494,6 @@ void CMonsterProcess::DieEvent(USHORT Animal_Id)
 	if (Animal->GetState() == OST_LIVE)
 		return;
 
-	Animal->SetState(OST_DIE);
 	// Animation
 	Animal->SetAnimation((UINT)ANIMAL_ANIMATION_TYPE::DIE);
 
@@ -578,6 +542,9 @@ void CMonsterProcess::RespawnEvent(USHORT Animal_Id)
 	USHORT& Animal_Index = Animal_Id;
 
 	m_pObjectPool->Init_Animal(Animal_Index);
+
+
+	Animal->SetState(OST_LIVE);
 
 	concurrent_unordered_set<USHORT> login_list;
 	concurrent_unordered_set<USHORT> range_list;

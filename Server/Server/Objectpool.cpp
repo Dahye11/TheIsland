@@ -412,9 +412,6 @@ void CObjectpool::Init_Animal(USHORT usIndex)
 	auto& Animal = m_cumAnimalPool[usIndex];
 	Animal->SetWakeUp(false);
 	Animal->SetState(OBJ_STATE_TYPE::OST_LIVE);
-	Animal->SetExit(false);
-	Animal->SetHit(false);
-	Animal->SetFirstAttack(true);
 
 	char eType = Animal->GetKind();
 
@@ -484,8 +481,7 @@ void CObjectpool::Animal_Collision(USHORT usIndex)
 	auto&	Animal = m_cumAnimalPool[usIndex];
 
 	if (!Animal->GetWakeUp()) return;
-	char eState = Animal->GetState();
-	if (eState == OST_DIE || eState == OST_REMOVE) return;
+	if (!Animal->GetState() == OST_DIE) return;
 
 	// NATURAL COLLISION
 	for (auto& natural : m_cumNaturalPool) {
@@ -500,25 +496,8 @@ void CObjectpool::Animal_Collision(USHORT usIndex)
 			Vec3 vDir = XMVector3Normalize(vAnimalPos - vNaturalPos);
 			float fSpeed = Animal->GetSpeed();
 			vDir.y = 0.f;
-			vAnimalPos += vDir * fSpeed * 0.1f;
+			vAnimalPos += vDir * fSpeed * 0.05f;
 			Animal->SetLocalPos(vAnimalPos);
-		}
-	}
-	for (auto& animal : m_cumAnimalPool) {
-		if (animal.first == usIndex) continue;
-		char eState = animal.second->GetState();
-		if (eState == OST_DIE || eState == OST_REMOVE) continue;
-
-		if (CollisionSphere(Animal, animal, 30.f)) {
-			cout << "First : " << usIndex << " SECOND : " << animal.first << endl;
-			Vec3 OtherPos = animal.second->GetLocalPos();
-			Vec3 AnimalPos = Animal->GetLocalPos();
-
-			Vec3 vDir = XMVector3Normalize(OtherPos - AnimalPos);
-			float fSpeed = Animal->GetSpeed();
-			vDir.y = 0;
-			AnimalPos -= vDir * fSpeed * 0.1f;
-			Animal->SetLocalPos(AnimalPos);
 		}
 	}
 }

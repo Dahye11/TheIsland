@@ -8,8 +8,7 @@ CMonster::CMonster() :
 	m_iBehaviorCount(0),
 	m_bExit(false),
 	m_iExitCount(0),
-	m_uiAnimation((UINT)ANIMAL_ANIMATION_TYPE::IDLE),
-	m_bFirstAttack(true)
+	m_uiAnimation((UINT)ANIMAL_ANIMATION_TYPE::IDLE)
 {
 }
 

@@ -26,8 +26,6 @@ private:
 
 	UINT			m_uiAnimation;
 
-	volatile bool	m_bFirstAttack;
-
 public:
 	shared_mutex m_smAnimalSharedMutex;
 
@@ -51,9 +49,7 @@ public:
 	void SetExit(bool bExit) { unique_lock<shared_mutex> lock(m_smAnimalSharedMutex); m_bExit = bExit; };
 	void SetExitCount(int count) { unique_lock<shared_mutex> lock(m_smAnimalSharedMutex); m_iExitCount = count; };
 
-	void SetAnimation(UINT uiAni) { unique_lock<shared_mutex> lock(m_smAnimalSharedMutex); m_uiAnimation = uiAni; };
-
-	void SetFirstAttack(bool bAttack) { unique_lock<shared_mutex> lock(m_smAnimalSharedMutex); m_bFirstAttack = bAttack; };
+	void SetAnimation(UINT uiAni) { unique_lock<shared_mutex> lock(m_smAnimalSharedMutex); };
 public:
 	const bool GetWakeUp();
 
@@ -75,8 +71,6 @@ public:
 	const int GetExitCount() { shared_lock<shared_mutex> lock(m_smAnimalSharedMutex); return m_iExitCount; };
 
 	const UINT	GetAnimation() { shared_lock<shared_mutex> lock(m_smAnimalSharedMutex); return m_uiAnimation; };
-
-	const bool GetFirstAttack() { shared_lock<shared_mutex> lock(m_smAnimalSharedMutex); return m_bFirstAttack; };
 public:
 	void MinusBehaviorCount() 
 	{ 
