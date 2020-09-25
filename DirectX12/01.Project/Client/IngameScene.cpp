@@ -1555,8 +1555,8 @@ void CIngameScene::PlayerUpdate(USHORT usId, Vec3 vPos, Vec3 vRot)
 			m_mapPlayers.insert(make_pair(usId, pObject));
 		}
 		else {
-			//float fHeight = CNaviMgr::GetInst()->GetY(m_mapPlayers[usId]->Transform()->GetLocalPos());
-			m_mapPlayers[usId]->Transform()->SetLocalPos(Vec3(vPos.x, vPos.y, vPos.z));
+			float fHeight = CNaviMgr::GetInst()->GetY(m_mapPlayers[usId]->Transform()->GetLocalPos());
+			m_mapPlayers[usId]->Transform()->SetLocalPos(Vec3(vPos.x, fHeight, vPos.z));
 			m_mapPlayers[usId]->Transform()->SetLocalRot(vRot);
 		}
 	}

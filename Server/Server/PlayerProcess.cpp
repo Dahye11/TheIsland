@@ -313,6 +313,7 @@ void CPlayerProcess::PlayerAttack(USHORT playerId, char * packet)
 			}
 			else {
 				Natural->SetHealth(fHealth);
+				cout << Natural->GetHealth() << endl;
 				/*char eItemType = ITEM_END;
 				int iAmount = 1;
 				if (eType == N_TREE) {
