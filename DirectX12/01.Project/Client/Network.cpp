@@ -32,7 +32,6 @@
 #include <Engine/Animator3D.h>
 #include "SunshineScript.h"
 #include "StatusScript.h"
-#include "GameOverScript.h"
 
 #include <Engine/NaviMgr.h>
 #include <Engine/Layer.h>
@@ -66,11 +65,9 @@ void CNetwork::BindfpPacket()
 	// - Player
 	m_fpPacketProcess[SC_STATUS_PLAYER] = [&](char* packet) {Recv_Status_Player_Packet(packet); };
 	m_fpPacketProcess[SC_CHAT] = [&](char* packet) {Recv_Chat_Packet(packet); };
-	m_fpPacketProcess[SC_DEATH_PLAYER] = [&](char* packet) {Recv_Death_Player_Packet(packet); };
 	// - Natural
 	m_fpPacketProcess[SC_PUT_NATURAL] = [&](char* packet) {Recv_Put_Natural_Packet(packet); };
-	m_fpPacketProcess[SC_DESTROY_NATURAL] = [&](char* packet) {Recv_Destroy_Natural_Packet(packet);};
-	m_fpPacketProcess[SC_RESPAWN_NATURAL] = [&](char* packet) {Recv_Respawn_Natural_Packet(packet); };
+	m_fpPacketProcess[SC_DESTROY_NATURAL] = [&](char* packet) {Recv_Destroy_Natural_Packet(packet); };
 	// - House
 	m_fpPacketProcess[SC_INSTALL_HOUSE] = [&](char* packet) {Recv_Install_Housing_Packet(packet); };
 	m_fpPacketProcess[SC_REMOVE_HOUSE] = [&](char* packet) {Recv_Remove_Housing_Packet(packet); };
@@ -295,25 +292,6 @@ void CNetwork::Recv_Chat_Packet(char * packet)
 	
 }
 
-void CNetwork::Recv_Death_Player_Packet(char * packet)
-{
-	sc_death_player_packet	death_packet;
-
-	CGameObject*	pObject = new CGameObject;
-	pObject->AddComponent(new CTransform);
-	pObject->AddComponent(new CGameOverScript);
-	pObject->SetName(L"GameOver");
-	pObject->Transform()->SetLocalPos(Vec3(0.f, 0.f, 0.f));
-	pObject->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-	pObject->GetScript<CGameOverScript>()->Init();
-	CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"UI")->AddGameObject(pObject);
-
-	CGameObject* pStatus = CSceneMgr::GetInst()->GetCurScene()->GetLayer(30)->FindObject(L"Player Status");
-	CStatusScript* pScript = pStatus->GetScript<CStatusScript>();
-	pScript->SetGameOver(true);
-	ShowCursor(true);
-}
-
 void CNetwork::Recv_Put_Natural_Packet(char * packet)
 {
 	sc_put_natural_packet* put_natural_packet = reinterpret_cast<sc_put_natural_packet*>(packet);
@@ -339,16 +317,7 @@ void CNetwork::Recv_Destroy_Natural_Packet(char * packet)
 	Vec3	Rot = destroy_natural_packet->vOriginRot;
 
 	// Á¦°Å
-	dynamic_cast<CIngameScene*>(pScene->GetSceneScript())->DestroyNatural(natural_id, Rot);
-}
-
-void CNetwork::Recv_Respawn_Natural_Packet(char * packet)
-{
-	sc_respawn_natural_packet* respawn_packet = reinterpret_cast<sc_respawn_natural_packet*>(packet);
-
-	USHORT natural_id = respawn_packet->natural_id;
-
-	dynamic_cast<CIngameScene*>(pScene->GetSceneScript())->RespawnNatural(natural_id);
+	dynamic_cast<CIngameScene*>(pScene->GetSceneScript())->DestroyNatural(natural_id);
 }
 
 void CNetwork::Recv_Install_Housing_Packet(char * packet)

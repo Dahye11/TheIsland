@@ -59,6 +59,12 @@ void CObject::SetState(char uiState)
 {
 	unique_lock<shared_mutex>lock(m_ObjMutex);
 	m_eState = uiState;
+	if (m_eState == OST_LIVE)
+		cout << "Live" << endl;
+	else if (m_eState == OST_DIE)
+		cout << "Die" << endl;
+	else if(m_eState == OST_REMOVE)
+		cout << "REMOVE" << endl;
 }
 
 void CObject::SetOffsetPos(Vec3 vPos)

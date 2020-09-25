@@ -2058,7 +2058,7 @@ void CIngameScene::InstallNatural(UINT uiType, USHORT uiId, Vec3 vPos, Vec3 vRot
 	}
 }
 
-void CIngameScene::DestroyNatural( USHORT uiId, Vec3 vRot )
+void CIngameScene::DestroyNatural( USHORT uiId )
 {
 	auto p = m_mapNatural.find( uiId );
 	if ( p == m_mapNatural.end() )
@@ -2066,21 +2066,13 @@ void CIngameScene::DestroyNatural( USHORT uiId, Vec3 vRot )
 		// 없는거 삭제하는 경우
 		return;
 	}
-	else {
-		m_mapNatural[uiId]->GetScript<CNaturalScript>()->DestroyNatural(vRot);
-	}
-}
+	cout << "Natural Destroy : " << uiId << endl;
+	tEvent tEv;
+	tEv.eType = EVENT_TYPE::DELETE_OBJECT;
+	tEv.wParam = ( DWORD_PTR )( m_mapNatural[uiId] );
+	CEventMgr::GetInst()->AddEvent( tEv );
 
-void CIngameScene::RespawnNatural(USHORT usId)
-{
-	auto p = m_mapNatural.find(usId);
-	if (p == m_mapNatural.end())
-	{
-		return;
-	}
-	else {
-		m_mapNatural[usId]->GetScript<CNaturalScript>()->Respawn();
-	}
+	m_mapNatural.erase( uiId );
 }
 
 void CIngameScene::DecreaseItem(char eItemType, int iCount)

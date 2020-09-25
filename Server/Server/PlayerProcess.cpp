@@ -398,8 +398,6 @@ void CPlayerProcess::PlayerEquipArmor(USHORT playerId, char * packet)
 	float fValue = GetArmor(eType);
 
 	m_pObjectPool->m_cumPlayerPool[playerId]->SetArmor(fValue);
-
-	CPacketMgr::Send_Status_Player_Packet(playerId);
 }
 
 void CPlayerProcess::PlayerDestroyArmor(USHORT playerId, char * packet)
@@ -408,8 +406,6 @@ void CPlayerProcess::PlayerDestroyArmor(USHORT playerId, char * packet)
 	
 	float fValue = 0.f;
 	m_pObjectPool->m_cumPlayerPool[playerId]->SetArmor(fValue);
-
-	CPacketMgr::Send_Status_Player_Packet(playerId);
 }
 
 void CPlayerProcess::PlayerInstallHousing(USHORT playerId, char * packet)

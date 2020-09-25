@@ -86,12 +86,9 @@ void CMonsterProcess::AttackEvent(USHORT Animal_Id, USHORT usTarget)
 
 		// Attack
 		float fTarget_CurrHp = Target->GetHealth();
-		float fTarget_CurrArmor = Target->GetArmor();
 		float fAnimalDamage = Animal->GetDamage();
 		fTarget_CurrHp -= fAnimalDamage;
 		float fTarget_AfterHp = fTarget_CurrHp;
-
-
 
 
 		if (fTarget_AfterHp <= 0.f)
@@ -101,7 +98,7 @@ void CMonsterProcess::AttackEvent(USHORT Animal_Id, USHORT usTarget)
 			Target->SetHealth(fTarget_AfterHp);
 			Target->SetState(OST_DIE);
 			CPacketMgr::Send_Status_Player_Packet(Target_Index);
-			CPacketMgr::Send_Death_Player_Packet(Target_Index);
+			//CPacketMgr::Send_Death_Player_Packet(Target_Index);
 		}
 		else
 		{
@@ -232,16 +229,15 @@ void CMonsterProcess::FollowEvent(USHORT AnimalId, USHORT usTarget)
 
 	InRangePlayer(loginList, rangeList, Animal_Index);
 	for (auto user : rangeList) {
-		auto& Player = m_pObjectPool->m_cumPlayerPool[user];
-		if (!Player->GetConnect()) continue;
+		if (!m_pObjectPool->m_cumPlayerPool[user]->GetConnect()) continue;
+		if (m_pObjectPool->m_cumPlayerPool[user]->GetState() == OST_DIE) continue;
+
 		CPacketMgr::Send_Pos_Packet(user, Animal_Index);
 		CPacketMgr::Send_Animation_Packet(user, Animal_Index, (UINT)ANIMAL_ANIMATION_TYPE::WALK);
 		
 		Vec3 vPos1 = Animal->GetLocalPos();
 		Vec3 vPos2 = m_pObjectPool->m_cumPlayerPool[user]->GetLocalPos();
 
-		if (Player->GetState() == OST_DIE)
-			continue;
 		if (ObjectRangeCheck(vPos1, vPos2, 2000.f)) {
 			float currDist = CalculationDistance(vPos1, vPos2);
 			if (fDist >= currDist) {
@@ -338,16 +334,15 @@ void CMonsterProcess::EvastionEvent(USHORT AnimalId, USHORT usTarget)
 
 	InRangePlayer(loginList, rangeList, Animal_Index);
 	for (auto user : rangeList) {
-		auto& Player = m_pObjectPool->m_cumPlayerPool[user];
-		if (!Player->GetConnect()) continue;
+		if (!m_pObjectPool->m_cumPlayerPool[user]->GetConnect()) continue;
+		if (m_pObjectPool->m_cumPlayerPool[user]->GetState() == OST_DIE) continue;
 
 		CPacketMgr::Send_Pos_Packet(user, Animal_Index);
 		CPacketMgr::Send_Animation_Packet(user, Animal_Index, (UINT)ANIMAL_ANIMATION_TYPE::RUN);
 
-		if (Player->GetState() == OST_DIE)
-			continue;
 		Vec3 vPos1 = Animal->GetLocalPos();
-		Vec3 vPos2 = Player->GetLocalPos();
+		Vec3 vPos2 = m_pObjectPool->m_cumPlayerPool[user]->GetLocalPos();
+
 		if (ObjectRangeCheck(vPos1, vPos2, 2000.f)) {
 			float currDist = CalculationDistance(vPos1, vPos2);
 			if (fDist >= currDist) {
@@ -508,8 +503,6 @@ void CMonsterProcess::IdleEvent(USHORT AnimalId)
 				CPacketMgr::Send_Pos_Packet(user, AnimalId);
 				CPacketMgr::Send_Animation_Packet(user, AnimalId, (UINT)ANIMAL_ANIMATION_TYPE::WALK);
 			}
-			if (Player->GetState() == OST_DIE)
-				continue;
 			float currDist = CalculationDistance(vPos1, vPos2);
 			if (fDist >= currDist) {
 				fDist = currDist;

@@ -249,16 +249,6 @@ void CPacketMgr::Send_Natural_Destroy_Packet(USHORT PlayerId, USHORT NaturalId)
 
 }
 
-void CPacketMgr::Send_Natural_Respawn_Packet(USHORT PlayerId, USHORT NaturalId)
-{
-	sc_respawn_natural_packet	packet;
-	packet.size = sizeof(sc_respawn_natural_packet);
-	packet.type = SC_RESPAWN_NATURAL;
-	packet.natural_id = NaturalId;
-
-	Send_Packet(PlayerId, &packet);
-}
-
 void CPacketMgr::Send_Weather_Packet(USHORT player_Id, bool bRain)
 {
 	sc_weather_packet packet;

@@ -73,7 +73,6 @@ enum SC_PACKET_TYPE {
 	// - Natural
 	SC_PUT_NATURAL,
 	SC_DESTROY_NATURAL,
-	SC_RESPAWN_NATURAL,
 	// - Housing
 	SC_INSTALL_HOUSE,
 	SC_REMOVE_HOUSE,
@@ -250,13 +249,6 @@ struct sc_destroy_natural_packet
 	char type;
 	USHORT natural_id;
 	Vec3	vOriginRot;
-};
-
-struct sc_respawn_natural_packet
-{
-	char	size;
-	char	type;
-	USHORT	natural_id;
 };
 
 // [ Item ]

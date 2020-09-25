@@ -517,6 +517,7 @@ void CObjectpool::Animal_Collision(USHORT usIndex)
 		if (eState == OST_DIE || eState == OST_REMOVE) continue;
 
 		if (CollisionSphere(Animal, animal, 30.f)) {
+			cout << "First : " << usIndex << " SECOND : " << animal.first << endl;
 			Vec3 OtherPos = animal.second->GetLocalPos();
 			Vec3 AnimalPos = Animal->GetLocalPos();
 

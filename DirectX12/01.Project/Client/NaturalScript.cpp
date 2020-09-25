@@ -60,6 +60,7 @@ void CNaturalScript::Update()
 	if ( !m_bDestroy)
 		return;
 
+
 	switch ( m_eType )
 	{
 	case NATURAL_TREE:
@@ -85,26 +86,22 @@ void CNaturalScript::Update()
 		}
 		else
 		{
-#ifdef NETWORK_ON
 			m_fTime -= DT;
-			if (m_fTime <= 0.f)
+			if ( m_fTime <= 0.f )
 			{
 				Respawn();
 			}
-#endif // NETWORK_ON
 		}
 	}
 	break;
 	case NATURAL_STONE:
 	case NATURAL_BUSH:
 	{
-#ifdef NETWORK_ON
 		m_fTime -= DT;
-		if (m_fTime <= 0.f)
+		if ( m_fTime <= 0.f )
 		{
 			Respawn();
 		}
-#endif // NETWORK_ON
 	}
 	break;
 	case NATURAL_NONE:
@@ -290,44 +287,6 @@ void CNaturalScript::SetHealth(float fHealth)
 	if (m_eType == NATURAL_NONE)
 		return;
 
-#ifdef NETWORK_ON
-	if (m_pParticleObj == NULL)
-	{
-		// ====================
-		// Particle Object »ý¼º
-		// ====================
-		m_pParticleObj = new CGameObject;
-		m_pParticleObj->SetName(L"Particle");
-		m_pParticleObj->AddComponent(new CTransform);
-		m_pParticleObj->AddComponent(new CParticleSystem);
-
-		m_pParticleObj->ParticleSystem()->SetStartColor(Vec4(1.f, 0.7f, 0.f, 1.f));
-		m_pParticleObj->ParticleSystem()->SetEndColor(Vec4(0.5f, 0.1f, 0.f, 0.6f));
-
-		m_pParticleObj->ParticleSystem()->SetStartSpeed(200.f);
-		m_pParticleObj->ParticleSystem()->SetEndSpeed(200.f);
-
-		Vec3 vPos = Transform()->GetWorldPos();
-		Vec3 vScale = Transform()->GetLocalScale();
-
-		m_pParticleObj->Transform()->SetLocalPos(Vec3(vPos.x, vPos.y + 20.f, vPos.z));
-		m_pParticleObj->Transform()->SetLocalScale(Vec3(10.f, 10.f, 10.f));
-
-		//GetObj()->AddChild( m_pParticleObj );
-
-		tEvent tEv;
-		tEv.eType = EVENT_TYPE::CREATE_OBJECT;
-		tEv.wParam = (DWORD_PTR)m_pParticleObj;
-		tEv.lParam = 3;
-		CEventMgr::GetInst()->AddEvent(tEv);
-	}
-	m_fParticleTime = 1.f;
-
-
-	return;
-#endif // NETWORK_ON
-
-
 	m_fHealth = fHealth;
 
 	if (m_fHealth <= 0.f)
@@ -386,35 +345,3 @@ void CNaturalScript::SetDestroy(bool bDestroy)
 {
 	m_bDestroy = bDestroy;
 }
-
-#ifdef NETWORK_ON
-void CNaturalScript::SetTargetRot(Vec3 vRot)
-{
-	m_vTargetRot = vRot;
-}
-
-Vec3 CNaturalScript::GetTargetRot()
-{
-	return m_vTargetRot;
-}
-
-void CNaturalScript::DestroyNatural(Vec3 vRot)
-{
-	m_bDestroy = true;
-	m_fAngle = 0.f;
-
-
-	m_vTargetRot = vRot;
-
-	if (m_eType != NATURAL_TREE)
-	{
-		tEvent evt = {};
-		evt.eType = EVENT_TYPE::TRANSFER_LAYER;
-		evt.wParam = (DWORD_PTR)GetObj();
-		evt.lParam = ((DWORD_PTR)29 << 16 | (DWORD_PTR)true);
-		CEventMgr::GetInst()->AddEvent(evt);
-		MeshRender()->SetDynamicShadow(false);
-	}
-}
-
-#endif // NETWORK_ON

@@ -31,7 +31,6 @@ public:
 public:
 	static void Send_Put_Natural_Packet(USHORT PlayerId, USHORT NaturalId);
 	static void Send_Natural_Destroy_Packet(USHORT PlayerId, USHORT NaturalId);
-	static void Send_Natural_Respawn_Packet(USHORT PlayerId, USHORT NaturalId);
 
 public: // etc
 	static void Send_Weather_Packet(USHORT player_Id, bool bRain);

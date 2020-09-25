@@ -40,6 +40,6 @@ void CNaturalProcess::RespawnEvent(USHORT natural_id)
 	for (auto& user : m_pObjectPool->m_cumPlayerPool) {
 		bool bConnect = user.second->GetConnect();
 		if (!bConnect) continue;
-		CPacketMgr::Send_Natural_Respawn_Packet(user.first, natural_id);
+		CPacketMgr::Send_Put_Natural_Packet(user.first, natural_id);
 	}
 }

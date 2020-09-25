@@ -65,12 +65,10 @@ public:
 	// - Player
 	void Recv_Status_Player_Packet(char* packet);
 	void Recv_Chat_Packet(char* packet);
-	void Recv_Death_Player_Packet(char* packet);
 
 public: // Natural
 	void Recv_Put_Natural_Packet(char* packet);
 	void Recv_Destroy_Natural_Packet(char* packet);
-	void Recv_Respawn_Natural_Packet(char* packet);
 	
 public: // Housing
 	void Recv_Install_Housing_Packet(char* packet);
