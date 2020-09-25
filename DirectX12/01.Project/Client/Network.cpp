@@ -347,12 +347,7 @@ void CNetwork::Recv_Check_Housing_Packet(char * packet)
 {
 	sc_check_housing_packet* check_housing_packet = reinterpret_cast<sc_check_housing_packet*>(packet);
 	bool bCheck = check_housing_packet->bCheck;
-	char eItemType = check_housing_packet->eItemType;
-	int iCount = check_housing_packet->iCount;
 	m_bHousingCheck = bCheck;
-
-	if(bCheck)
-		dynamic_cast<CIngameScene*>(pScene->GetSceneScript())->DecreaseItem(eItemType, iCount);
 }
 
 void CNetwork::Recv_Upgrade_Housing_Packet(char * packet)
@@ -360,9 +355,6 @@ void CNetwork::Recv_Upgrade_Housing_Packet(char * packet)
 	sc_upgrade_housing_packet*	upgrade_housing_packet = reinterpret_cast<sc_upgrade_housing_packet*>(packet);
 	USHORT house_id = upgrade_housing_packet->house_id;
 	UINT uiGrade = upgrade_housing_packet->house_grade;
-	char eType = upgrade_housing_packet->house_type;
-
-	dynamic_cast<CIngameScene*>(pScene->GetSceneScript())->UpdateHousing(eType, house_id, uiGrade);
 }
 
 void CNetwork::Recv_Add_Item_Packet(char * packet)

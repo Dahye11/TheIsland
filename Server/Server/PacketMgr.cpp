@@ -198,15 +198,13 @@ void CPacketMgr::Send_Remove_Housing_Packet(USHORT player_Id, USHORT housing_Id)
 	Send_Packet(player_Id, &packet);
 }
 
-void CPacketMgr::Send_Check_Housing_Packet(USHORT player_Id, USHORT housing_Id, bool bCheck, char eItemType, int iCount)
+void CPacketMgr::Send_Check_Housing_Packet(USHORT player_Id, USHORT housing_Id, bool bCheck)
 {
 	sc_check_housing_packet	packet;
 	packet.size = sizeof(sc_check_housing_packet);
 	packet.type = SC_CHECK_HOUSE;
 	packet.house_id = housing_Id;
 	packet.bCheck = bCheck;
-	packet.eItemType = eItemType;
-	packet.iCount = iCount;
 	Send_Packet(player_Id, &packet);
 }
 
@@ -217,7 +215,6 @@ void CPacketMgr::Send_Upgrade_Housing_Packet(USHORT PlayerId, USHORT house_Id)
 	packet.type = SC_UPGRADE_HOUSE;
 	packet.house_id = house_Id;
 	packet.house_grade = CProcess::m_pObjectPool->m_cumHousingPool[house_Id]->GetUpgrade();
-	packet.house_type = CProcess::m_pObjectPool->m_cumHousingPool[house_Id]->GetType();
 
 	Send_Packet(PlayerId, &packet);
 }

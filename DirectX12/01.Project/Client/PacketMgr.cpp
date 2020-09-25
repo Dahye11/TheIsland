@@ -164,7 +164,6 @@ void CPacketMgr::Send_Install_Housing_Packet(UINT uiType, Vec3 vLocalPos, Vec3 v
 void CPacketMgr::Send_Remove_Housing_Packet(USHORT houseId)
 {
 	cs_remove_housing_packet* remove_housing_packet = reinterpret_cast<cs_remove_housing_packet*>(m_cSendBuf);
-	remove_housing_packet->size = sizeof(cs_remove_housing_packet);
 	remove_housing_packet->type = CS_HOUSING_REMOVE;
 	remove_housing_packet->house_id = houseId;
 
@@ -175,24 +174,6 @@ void CPacketMgr::Send_Remove_Housing_Packet(USHORT houseId)
 	{
 		int err_no = WSAGetLastError();
 		CNetwork::Err_display("Err while sending packet - ", err_no);
-	}
-}
-
-void CPacketMgr::Send_Upgrade_Housing_Packet(USHORT houseId)
-{
-	cs_upgrade_housing_packet* upgrade_packet = reinterpret_cast<cs_upgrade_housing_packet*>(m_cSendBuf);
-
-	upgrade_packet->size = sizeof(cs_upgrade_housing_packet);
-	upgrade_packet->type = CS_HOUSING_UPGRADE;
-	upgrade_packet->house_id = houseId;
-
-	DWORD size{ 0 }, flag{ 0 };
-	m_SendWsaBuf.len = sizeof(cs_upgrade_housing_packet);
-	int retval = WSASend(CNetwork::GetInst()->GetSocket(), &m_SendWsaBuf, 1, &size, flag, NULL, NULL);
-
-	if (retval != 0) {
-		int err_no = WSAGetLastError();
-		CNetwork::Err_display("Err sending packet - ", err_no);
 	}
 }
 

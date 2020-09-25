@@ -443,7 +443,7 @@ void CPlayerProcess::PlayerInstallHousing(USHORT playerId, char * packet)
 			bool bConnect = m_pObjectPool->m_cumPlayerPool[au]->GetConnect();
 			if (!bConnect)	continue;
 			if (playerId == au)
-				CPacketMgr::Send_Check_Housing_Packet(au, house_id, true, ITEM_WOOD, 3);
+				CPacketMgr::Send_Check_Housing_Packet(au, house_id, true);
 			CPacketMgr::Send_Install_Housing_Packet(au, house_id);
 		}
 		PlusHouseNum();
@@ -458,8 +458,6 @@ void CPlayerProcess::PlayerRemoveHousing(USHORT playerId, char * packet)
 
 	USHORT house_id = remove_housing_packet->house_id;
 
-	cout << house_id << endl;
-
 	m_pObjectPool->m_cumHousingPool[house_id]->SetInstall(false);
 
 	concurrent_unordered_set<USHORT> loginList;
@@ -470,7 +468,7 @@ void CPlayerProcess::PlayerRemoveHousing(USHORT playerId, char * packet)
 	{
 		bool bConnect = m_pObjectPool->m_cumPlayerPool[au]->GetConnect();
 		if (!bConnect)	continue;
-		//if (au == playerId) continue;
+		if (au == playerId) continue;
 		CPacketMgr::Send_Remove_Housing_Packet(au, house_id);
 	}
 }
@@ -481,18 +479,17 @@ void CPlayerProcess::PlayerUpgradeHousing(USHORT playerId, char * packet)
 
 	USHORT& house_id = upgrade_housing_packet->house_id;
 
-	if (m_pObjectPool->Upgrade_House(house_id)) {
-		concurrent_unordered_set<USHORT>	loginList;
+	m_pObjectPool->m_cumHousingPool[house_id]->SetUpgrade();
 
-		CopyBeforeLoginList(loginList);
+	concurrent_unordered_set<USHORT>	loginList;
 
-		for (auto& au : loginList) {
-			bool bConnect = m_pObjectPool->m_cumPlayerPool[au]->GetConnect();
-			if (!bConnect) continue;
-			if (playerId == au)
-				CPacketMgr::Send_Check_Housing_Packet(au, house_id, true, ITEM_STONE, 3);
-			CPacketMgr::Send_Upgrade_Housing_Packet(au, house_id);
-		}
+	CopyBeforeLoginList(loginList);
+
+	for (auto& au : loginList) {
+		bool bConnect = m_pObjectPool->m_cumPlayerPool[au]->GetConnect();
+		if (!bConnect) continue;
+		if (au == playerId)	continue;
+		CPacketMgr::Send_Upgrade_Housing_Packet(au, house_id);
 	}
 }
 

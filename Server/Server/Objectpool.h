@@ -183,7 +183,7 @@ public:
 	bool Check_Install_House(CHousing* pHouse);
 	void Install_House(CHousing* pHouse, USHORT usIndex);
 	void Remove_House(USHORT usIndex);
-	bool Upgrade_House(USHORT usIndex);
+	void Upgrade_House(USHORT usIndex);
 
 public:
 	void Init_Animal(USHORT usIndex);

@@ -207,14 +207,10 @@ UINT CToolItemScript::Use_Right(CGameObject* pHost, CGameObject* pObj, int num)
 
 		if (pObj->GetLayerIdx() == CSceneMgr::GetInst()->GetCurScene()->FindLayer(L"House")->GetLayerIdx())
 		{
-#ifdef NETWORK_ON
-			CPacketMgr::GetInst()->Send_Remove_Housing_Packet(pObj->GetScript<CBuildScript>()->GetIndex());
-#else
 			tEvent tEv;
 			tEv.eType = EVENT_TYPE::DELETE_OBJECT;
 			tEv.wParam = (DWORD_PTR)pObj;
 			CEventMgr::GetInst()->AddEvent(tEv);
-#endif // NETWORK_ON
 		}
 	}
 		break;
@@ -345,14 +341,11 @@ UINT CToolItemScript::Use_Left(CGameObject* pHost, CGameObject* pObj, int num)
 			{
 				return 0;
 			}
-#ifdef NETWORK_ON
-			CPacketMgr::GetInst()->Send_Upgrade_Housing_Packet(pObj->GetScript<CBuildScript>()->GetIndex());
-#else
+
 			if (pObj->GetScript<CBuildScript>()->Upgrade())
 			{
 				pHost->GetScript<CPlayerScript>()->GetInventoryObject()->GetScript<CInventoryScript>()->DecreaseItem(idx, 3);
 			}
-#endif // NETWORK_ON
 		}
 	}
 		break;

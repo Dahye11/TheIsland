@@ -19,8 +19,6 @@ typedef DirectX::SimpleMath::Vector2 Vec2;
 typedef DirectX::SimpleMath::Vector3 Vec3;
 typedef DirectX::SimpleMath::Vector4 Vec4;
 
-#define	MAX_GRADE	2
-
 //#define DB_ON
 //#define ANIMAL_TEST
 

@@ -26,7 +26,7 @@ public: // Player 관련 패킷
 public:
 	static void Send_Install_Housing_Packet(USHORT player_Id, USHORT housing_Id);
 	static void Send_Remove_Housing_Packet(USHORT player_Id, USHORT housing_Id);
-	static void Send_Check_Housing_Packet(USHORT player_Id, USHORT housing_Id, bool bCheck, char eItemType = NULL, int iCount = NULL);
+	static void Send_Check_Housing_Packet(USHORT player_Id, USHORT housing_Id, bool bCheck);
 	static void Send_Upgrade_Housing_Packet(USHORT player_Id, USHORT house_Id);
 public:
 	static void Send_Put_Natural_Packet(USHORT PlayerId, USHORT NaturalId);

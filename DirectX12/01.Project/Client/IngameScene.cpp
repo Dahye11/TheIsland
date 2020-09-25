@@ -393,12 +393,6 @@ void CIngameScene::Init()
 	//
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"Animal");
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Arrow", L"House");
-
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Build", L"House");
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Build", L"Animal");
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Build", L"Environment");
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Build", L"House");
-	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Build", L"Human");
 #else
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Animal");
 	CCollisionMgr::GetInst()->CheckCollisionLayer(L"Player", L"Environment");
@@ -1925,7 +1919,6 @@ void CIngameScene::InstallHousing( UINT uiType, UINT uiGrade, USHORT uiId, Vec3 
 	pObject->GetScript<CBuildScript>()->MustBuild();
 
 	m_pScene->FindLayer(L"House")->AddGameObject(pObject);
-	m_mapHousing.insert(make_pair(uiId, pObject));
 }
 
 void CIngameScene::DestroyHousing( USHORT uiId )
@@ -1943,71 +1936,6 @@ void CIngameScene::DestroyHousing( USHORT uiId )
 	CEventMgr::GetInst()->AddEvent( tEv );
 
 	m_mapHousing.erase( uiId );
-}
-
-void CIngameScene::UpdateHousing(char eType, USHORT usId, UINT uiGrade)
-{
-	auto p = m_mapHousing.find(usId);
-	if (p == m_mapHousing.end()) {
-
-	}
-	else {
-		// 기존 하우스 정보 받아오기
-		Vec3 vLocalPos = m_mapHousing[usId]->Transform()->GetLocalPos();
-		Vec3 vLocalRot = m_mapHousing[usId]->Transform()->GetLocalRot();
-		Vec3 vLocalScale = m_mapHousing[usId]->Transform()->GetLocalScale();
-
-		// 기존 하우스 지우기
-		tEvent tEv;
-		tEv.eType = EVENT_TYPE::DELETE_OBJECT;
-		tEv.wParam = (DWORD_PTR)(m_mapHousing[usId]);
-		CEventMgr::GetInst()->AddEvent(tEv);
-
-		m_mapHousing.erase(usId);
-
-		// 업그레이드된 하우스 생성
-
-		CGameObject* pObject = nullptr;
-
-		if ((HOUSING_TYPE)eType != HOUSING_ETC)
-		{
-			pObject = CHousingMgr::GetInst()->GetHousingMeshData((HOUSING_TYPE)eType, uiGrade)->Instantiate();
-		}
-		else
-		{
-			Ptr<CMeshData> pTex = CResMgr::GetInst()->Load<CMeshData>(L"Campfire.mdat", L"MeshData\\campfire.mdat");
-			pObject = pTex->Instantiate();
-		}
-		pObject->AddComponent(new CBuildScript((HOUSING_TYPE)eType, uiGrade));
-
-#ifdef CHECK_COLLISION
-		pObject->AddComponent(new CCollider2D);
-		pObject->Collider2D()->SetOffsetScale(Vec3(195.f, 195.f, 195.f));
-
-		if (eType >= HOUSING_WALL && eType < HOUSING_FLOOR)
-			pObject->Collider2D()->SetOffsetPos(Vec3(0.f, 0.f, 120.f));
-
-		pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::SPHERE);
-
-#endif
-		pObject->SetName(L"House");
-
-		//Vec3 vNewPos = vPos;
-		//vNewPos.y = CNaviMgr::GetInst()->GetY( vPos );
-		pObject->Transform()->SetLocalPos(vLocalPos);
-
-		pObject->Transform()->SetLocalRot(vLocalRot);
-		pObject->Transform()->SetLocalScale(vLocalScale);
-
-		pObject->MeshRender()->SetDynamicShadow(true);
-
-		pObject->GetScript<CBuildScript>()->Init();
-		pObject->GetScript<CBuildScript>()->SetIndex(usId);
-		pObject->GetScript<CBuildScript>()->MustBuild();
-
-		m_pScene->FindLayer(L"House")->AddGameObject(pObject);
-		m_mapHousing.insert(make_pair(usId, pObject));
-	}
 }
 
 void CIngameScene::InstallNatural(UINT uiType, USHORT uiId, Vec3 vPos, Vec3 vRot, Vec3 vScale, Vec3 vOffsetPos, Vec3 vOffsetScale, float fHealth, bool bDestroy )
@@ -2073,15 +2001,6 @@ void CIngameScene::DestroyNatural( USHORT uiId )
 	CEventMgr::GetInst()->AddEvent( tEv );
 
 	m_mapNatural.erase( uiId );
-}
-
-void CIngameScene::DecreaseItem(char eItemType, int iCount)
-{
-	int idx = m_pInventory->GetScript<CInventoryScript>()->CheckItem(eItemType, iCount);
-	if (idx == -1) {
-		return;
-	}
-	m_pInventory->GetScript<CInventoryScript>()->DecreaseItem(idx, iCount);
 }
 
 void CIngameScene::ChatUpdate(string name, string Msg)
