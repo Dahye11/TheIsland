@@ -367,26 +367,26 @@ USHORT CObjectpool::GetLoginID()
 bool CObjectpool::Check_Install_House(CHousing * pHouse)
 {
 	CHousing* phouse = pHouse;
-	/*for (auto& house : m_cumHousingPool) {
+	for (auto& house : m_cumHousingPool) {
 		if (CollisionHouse(house, phouse))
 		{
 			return false;
 		}
-	}*/
-	/*for (auto& natural : m_cumNaturalPool) {
+	}
+	for (auto& natural : m_cumNaturalPool) {
 		if (CollisionHouse(natural, phouse)) {
 			if (natural.second->GetType() == N_BUSH)
 				continue;
 			return false;
 		}
-	}*/
-	/*for (auto& player : m_cumPlayerPool) {
+	}
+	for (auto& player : m_cumPlayerPool) {
 		if (CollisionHouse(player, phouse)) {
 			if (!player.second->GetConnect())
 				continue;
 			return false;
 		}
-	}*/
+	}
 	return true;
 }
 
