@@ -329,6 +329,7 @@ void CNetwork::Recv_Install_Housing_Packet(char * packet)
 	Vec3 vPos = install_housing_packet->vLocalPos;
 	Vec3 vRot = install_housing_packet->vLocalRot;
 	Vec3 vScale = install_housing_packet->vLocalScale;
+	UINT grade = 0;
 
 	// INSTALL Àü¼Û
 	dynamic_cast<CIngameScene*>(pScene->GetSceneScript())->InstallHousing(type, house_id, vPos, vRot, vScale);
