@@ -364,20 +364,29 @@ USHORT CObjectpool::GetLoginID()
 	return MAX_USER;
 }
 
-bool CObjectpool::Check_Install_House(CHousing * pHouse, USHORT usIndex)
+bool CObjectpool::Check_Install_House(CHousing * pHouse)
 {
 	CHousing* phouse = pHouse;
-
-	mu.lock();
-	for (auto& house : m_cumHousingPool) {
-		if (CollisionHousing(house, phouse))
+	/*for (auto& house : m_cumHousingPool) {
+		if (CollisionHouse(house, phouse))
 		{
-			mu.unlock();
 			return false;
 		}
-	}
-	m_cumHousingPool.insert(make_pair(usIndex, pHouse));
-	mu.unlock();
+	}*/
+	/*for (auto& natural : m_cumNaturalPool) {
+		if (CollisionHouse(natural, phouse)) {
+			if (natural.second->GetType() == N_BUSH)
+				continue;
+			return false;
+		}
+	}*/
+	/*for (auto& player : m_cumPlayerPool) {
+		if (CollisionHouse(player, phouse)) {
+			if (!player.second->GetConnect())
+				continue;
+			return false;
+		}
+	}*/
 	return true;
 }
 

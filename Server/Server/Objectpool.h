@@ -173,71 +173,6 @@ public:
 
 	}
 
-	bool CollisionHousing(pair<const USHORT, CHousing*> pFirst, CHousing* pSecond)
-	{
-		HOUSING_TYPE CurrType = pSecond->GetType();
-		HOUSING_TYPE ExistType = pFirst.second->GetType();
-
-		bool bCollision = false;
-
-		switch (ExistType)
-		{
-		case HOUSING_FOUNDATION:
-		{
-			if (CurrType == HOUSING_FOUNDATION)
-			{
-				Vec3 vPos = pSecond->GetLocalPos();
-				Vec3 vOtherPos = pFirst.second->GetLocalPos();
-				
-				if (vPos.x == vOtherPos.x && vPos.y == vOtherPos.y && vPos.z == vOtherPos.z) bCollision = true;
-			}
-		}
-		break;
-		case HOUSING_WALL:
-		case HOUSING_DOOR:
-		case HOUSING_WINDOW:
-		{
-			if (CurrType > HOUSING_FOUNDATION && CurrType < HOUSING_FLOOR)
-			{
-				Vec3 vPos = pSecond->GetLocalPos();
-				Vec3 vOtherPos = pFirst.second->GetLocalPos();
-
-				if (vPos.x == vOtherPos.x && vPos.y == vOtherPos.y && vPos.z == vOtherPos.z) bCollision = true;
-			}
-		}
-		break;
-		case HOUSING_FLOOR:
-		{
-			if (CurrType == HOUSING_FLOOR)
-			{
-				Vec3 vPos = pSecond->GetLocalPos();
-				Vec3 vOtherPos = pFirst.second->GetLocalPos();
-
-				if (vPos.x == vOtherPos.x && vPos.y == vOtherPos.y && vPos.z == vOtherPos.z) bCollision = true;
-			}
-		}
-		break;
-		case HOUSING_ETC:
-		{
-			//bCollision = false;
-
-			//if (CurrType == HOUSING_FOUNDATION)
-			//{
-			//	Vec3 vPos = pSecond->GetLocalPos();
-			//	Vec3 vOtherPos = pFirst.second->GetLocalPos();
-
-			//	vPos.y = vOtherPos.y;
-
-			//	//pSecond->SetLocalPos(vPos);
-			//}
-		}
-		break;
-		default:
-			break;
-		}
-		return bCollision;
-	}
-
 public:
 	static concurrent_unordered_map<USHORT, CPlayer*> m_cumPlayerPool;
 	static concurrent_unordered_map<USHORT, CMonster*> m_cumAnimalPool;
@@ -245,7 +180,7 @@ public:
 	static concurrent_unordered_map<USHORT, CHousing*> m_cumHousingPool;
 
 	USHORT GetLoginID();
-	bool Check_Install_House(CHousing* pHouse, USHORT usIndex);
+	bool Check_Install_House(CHousing* pHouse);
 	void Install_House(CHousing* pHouse, USHORT usIndex);
 	void Remove_House(USHORT usIndex);
 	bool Upgrade_House(USHORT usIndex);

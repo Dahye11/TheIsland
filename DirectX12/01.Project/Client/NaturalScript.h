@@ -62,9 +62,11 @@ public:
 	void SetIndex(UINT index) { m_iIndex = index; }
 	UINT GetIndex() { return m_iIndex; }
 
+#ifdef NETWORK_ON
 	void SetTargetRot(Vec3 vRot);
 	Vec3 GetTargetRot();
 
 	void DestroyNatural(Vec3 vRot);
+#endif // NETWORK_ON
 };
 

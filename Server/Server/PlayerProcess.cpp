@@ -434,8 +434,8 @@ void CPlayerProcess::PlayerInstallHousing(USHORT playerId, char * packet)
 		House->SetOffsetPos(Vec3(0.f, 0.f, 120.f));
 	House->SetOffsetScale(Vec3(195.f, 195.f, 195.f));
 
-	if (m_pObjectPool->Check_Install_House(House, house_id)) {
-		PlusHouseNum();
+	if (m_pObjectPool->Check_Install_House(House)) {
+		m_pObjectPool->Install_House(House, house_id);
 
 		concurrent_unordered_set<USHORT> loginList;
 
@@ -449,6 +449,7 @@ void CPlayerProcess::PlayerInstallHousing(USHORT playerId, char * packet)
 				CPacketMgr::Send_Check_Housing_Packet(au, house_id, true, ITEM_WOOD, 3);
 			CPacketMgr::Send_Install_Housing_Packet(au, house_id);
 		}
+		PlusHouseNum();
 	}
 	else
 		CPacketMgr::Send_Check_Housing_Packet(playerId, house_id, false);

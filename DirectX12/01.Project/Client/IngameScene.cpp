@@ -137,7 +137,7 @@ void CIngameScene::Init()
 
 	pPlayer->SetName( L"Player Object" );
 	pPlayer->FrustumCheck( false );
-	pPlayer->Transform()->SetLocalPos( Vec3( 18000.f, 250.f, 2000.f ) );
+	pPlayer->Transform()->SetLocalPos( Vec3( 18000.f, 200.f, 2000.f ) );
 	pPlayer->Transform()->SetLocalScale( Vec3( 1.5f, 1.5f, 1.5f ) );
 	//pPlayer->Transform()->SetLocalRot(Vec3(0.f, 0.f, 0.f));
 	m_pScene->FindLayer( L"Player" )->AddGameObject( pPlayer );
@@ -1952,16 +1952,20 @@ void CIngameScene::UpdateHousing(char eType, USHORT usId, UINT uiGrade)
 
 	}
 	else {
+		// 기존 하우스 정보 받아오기
 		Vec3 vLocalPos = m_mapHousing[usId]->Transform()->GetLocalPos();
 		Vec3 vLocalRot = m_mapHousing[usId]->Transform()->GetLocalRot();
 		Vec3 vLocalScale = m_mapHousing[usId]->Transform()->GetLocalScale();
 
+		// 기존 하우스 지우기
 		tEvent tEv;
 		tEv.eType = EVENT_TYPE::DELETE_OBJECT;
 		tEv.wParam = (DWORD_PTR)(m_mapHousing[usId]);
 		CEventMgr::GetInst()->AddEvent(tEv);
 
 		m_mapHousing.erase(usId);
+
+		// 업그레이드된 하우스 생성
 
 		CGameObject* pObject = nullptr;
 
@@ -2003,66 +2007,6 @@ void CIngameScene::UpdateHousing(char eType, USHORT usId, UINT uiGrade)
 
 		m_pScene->FindLayer(L"House")->AddGameObject(pObject);
 		m_mapHousing.insert(make_pair(usId, pObject));
-
-
-		//m_mapHousing[usId]->GetScript<CBuildScript>()->Upgrade(eType, uiGrade);
-//		CGameObject* pObject = NULL;
-//		pObject = CHousingMgr::GetInst()->GetHousingMeshData((HOUSING_TYPE)eType, uiGrade)->Instantiate();
-//		pObject->AddComponent(new CBuildScript((HOUSING_TYPE)eType, uiGrade));
-//
-//#ifdef CHECK_COLLISION
-//		pObject->AddComponent(new CCollider2D);
-//		pObject->Collider2D()->SetOffsetScale(Vec3(195.f, 195.f, 195.f));
-//
-//		if (eType >= HOUSING_WALL && eType < HOUSING_FLOOR)
-//			pObject->Collider2D()->SetOffsetPos(Vec3(0.f, 0.f, 120.f));
-//
-//		pObject->Collider2D()->SetCollider2DType(COLLIDER2D_TYPE::SPHERE);
-//
-//#endif // CHECK_COLLISION
-//		pObject->SetName(L"House");
-//
-//		// 기존 하우스 정보 받아오기
-//		Vec3 vLocalPos = m_mapHousing[usId]->Transform()->GetLocalPos();
-//		Vec3 vLocalRot = m_mapHousing[usId]->Transform()->GetLocalRot();
-//		Vec3 vLocalScale = m_mapHousing[usId]->Transform()->GetLocalScale();
-//
-//		// 기존 하우스 지우기
-//		tEvent tEv;
-//		tEv.eType = EVENT_TYPE::DELETE_OBJECT;
-//		tEv.wParam = (DWORD_PTR)(m_mapHousing[usId]);
-//		CEventMgr::GetInst()->AddEvent(tEv);
-//
-//		m_mapHousing.erase(usId);
-//
-//		// 업그레이드된 하우스
-//		pObject->Transform()->SetLocalPos(vLocalPos);
-//		pObject->Transform()->SetLocalRot(vLocalRot);
-//		pObject->Transform()->SetLocalScale(vLocalScale);
-//
-//		UINT uiCount = pObject->GetScript<CBuildScript>()->GetMaterialCount();
-//
-//		for (int i = 0; i < uiCount; ++i) {
-//			pObject->MeshRender()->GetCloneMaterial(i)->SetShader(CResMgr::GetInst()->FindRes<CShader>(L"Std3DShader"));
-//		}
-//		
-//		if (eType == HOUSING_FOUNDATION)
-//		{
-//			CGameObject* pFloor = CHousingMgr::GetInst()->GetHousingMeshData(HOUSING_FLOOR, uiGrade)->Instantiate();
-//			pFloor->SetName(L"Foundation_Floor");
-//			pFloor->FrustumCheck(false);
-//			pFloor->Transform()->SetLocalPos(Vec3(0.f, 0.f, -14.f));
-//			pFloor->Transform()->SetLocalScale(Vec3(1.f, 1.f, 1.f));
-//			for (int i = 0; i < uiCount; ++i)
-//			{
-//				pFloor->MeshRender()->GetCloneMaterial(i)->SetShader(CResMgr::GetInst()->FindRes<CShader>(L"Std3DShader"));
-//			}
-//			pObject->AddChild(pFloor);
-//		}
-//		m_pScene->FindLayer(L"House")->AddGameObject(pObject);
-//
-//		// 업그레이드된 하우스 생성
-//		m_mapHousing.insert(make_pair(usId, pObject));
 	}
 }
 
